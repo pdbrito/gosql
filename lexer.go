@@ -9,16 +9,6 @@ type location struct {
 	col  uint
 }
 
-type symbol string
-
-const (
-	semicolonSymbol  symbol = ";"
-	asteriskSymbol   symbol = "*"
-	commaSymbol      symbol = ","
-	leftparenSymbol  symbol = "("
-	rightparenSymbol symbol = ")"
-)
-
 type tokenKind uint
 
 const (
