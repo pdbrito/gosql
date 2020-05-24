@@ -63,3 +63,37 @@ func Parse(source string) (*Ast, error) {
 
 	return &a, nil
 }
+
+func parseStatement(tokens []*token, initialCursor uint, delimiter token) (*Statement, uint, bool) {
+	cursor := initialCursor
+
+	// Look for SELECT statement
+	semicolonToken := tokenFromSymbol(semicolonSymbol)
+	slct, newCursor, ok := parseSelectStatement(tokens, cursor, semicolonToken)
+	if ok {
+		return &Statement{
+			Kind:            SelectKind,
+			SelectStatement: slct,
+		}, newCursor, true
+	}
+
+	// Look for INSERT statement
+	inst, newCursor, ok := parseInsertStatement(tokens, cursor, semicolonToken)
+	if ok {
+		return &Statement{
+			Kind:            InsertKind,
+			SelectStatement: slct,
+		}, newCursor, true
+	}
+
+	// Look for CREATE statment
+	crtTbl, newCursor, ok := parseCreateTableStatement(tokens, cursor, semicolonToken)
+	if ok {
+		return &Statement{
+			Kind:                 CreateTableKind,
+			CreateTableStatement: crtTbl,
+		}, newCursor, true
+	}
+
+	return nil, initialCursor, false
+}
