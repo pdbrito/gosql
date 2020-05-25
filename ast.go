@@ -46,6 +46,6 @@ type CreateTableStatement struct {
 }
 
 type SelectStatement struct {
-	name token
-	cols *[]*columnDefinition
+	item []*expression
+	from token
 }
