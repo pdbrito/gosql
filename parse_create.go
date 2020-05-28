@@ -38,3 +38,46 @@ func parseCreateTableStatement(tokens []*token, initialCursor uint, delimiter to
 		cols: cols,
 	}, cursor, true
 }
+
+func parseColumnDefinitions(tokens []*token, initialCursor uint, delimiter token) (*[]*columnDefinition, uint, bool) {
+	cursor := initialCursor
+
+	cds := []*columnDefinition{}
+	for {
+		if cursor >= uint(len(tokens)) {
+			return nil, initialCursor, false
+		}
+
+		current := tokens[cursor]
+		if delimiter.equals(current) {
+			break
+		}
+
+		if len(cds) > 0 {
+			if !expectToken(tokens, cursor, tokenFromSymbol(commaSymbol)) {
+				helpMessage(tokens, cursor, "Expected ,")
+				return nil, initialCursor, false
+			}
+
+			cursor++
+		}
+
+		name, newCursor, ok := parseToken(tokens, cursor, identifierKind)
+		if !ok {
+			helpMessage(tokens, cursor, "expected column name")
+			return nil, initialCursor, false
+		}
+		cursor = newCursor
+
+		dataType, newCursor, ok := parseToken(tokens, cursor, keywordKind)
+		if !ok {
+			helpMessage(tokens, cursor, "expected column type")
+			return nil, initialCursor, false
+		}
+		cursor = newCursor
+
+		cds = append(cds, &columnDefinition{name: *name, datatype: *dataType})
+	}
+
+	return &cds, cursor, true
+}
