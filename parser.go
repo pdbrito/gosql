@@ -82,7 +82,7 @@ func parseStatement(tokens []*token, initialCursor uint, delimiter token) (*Stat
 	if ok {
 		return &Statement{
 			Kind:            InsertKind,
-			SelectStatement: slct,
+			InsertStatement: inst,
 		}, newCursor, true
 	}
 
