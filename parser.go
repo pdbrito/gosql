@@ -37,6 +37,12 @@ func Parse(source string) (*Ast, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	semicolonToken := tokenFromSymbol(semicolonSymbol)
+	if len(tokens) > 0 && !tokens[len(tokens)-1].equals(&semicolonToken) {
+		tokens = append(tokens, &semicolonToken)
+	}
+
 	a := Ast{}
 	cursor := uint(0)
 	for cursor < uint(len(tokens)) {
