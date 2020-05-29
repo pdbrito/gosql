@@ -46,6 +46,15 @@ type CreateTableStatement struct {
 }
 
 type SelectStatement struct {
-	item []*expression
-	from token
+	item *[]*selectItem
+	from *fromItem
+}
+
+type selectItem struct {
+	exp      *expression
+	asterisk bool
+	as       *token
+}
+type fromItem struct {
+	table *token
 }
