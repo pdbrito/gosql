@@ -119,22 +119,18 @@ func parseToken(tokens []*token, initialCursor uint, kind tokenKind) (*token, ui
 	return nil, initialCursor, false
 }
 
-func parseExpressions(tokens []*token, initialCursor uint, delimiters []token) (*[]*expression, uint, bool) {
+func parseExpressions(tokens []*token, initialCursor uint, delimiter token) (*[]*expression, uint, bool) {
 	cursor := initialCursor
 
 	exps := []*expression{}
-
-outer:
 	for {
 		if cursor >= uint(len(tokens)) {
 			return nil, initialCursor, false
 		}
 
 		current := tokens[cursor]
-		for _, delimiter := range delimiters {
-			if delimiter.equals(current) {
-				break outer
-			}
+		if delimiter.equals(current) {
+			break
 		}
 
 		if len(exps) > 0 {

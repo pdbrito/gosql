@@ -33,7 +33,7 @@ func parseInsertStatement(tokens []*token, initialCursor uint, delimiter token) 
 	}
 	cursor++
 
-	values, newCursor, ok := parseExpressions(tokens, cursor, []token{tokenFromSymbol(rightParenSymbol)})
+	values, newCursor, ok := parseExpressions(tokens, cursor, tokenFromSymbol(rightParenSymbol))
 	if !ok {
 		helpMessage(tokens, cursor, "expected one or more comma separated values")
 		return nil, initialCursor, false
