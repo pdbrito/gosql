@@ -8,6 +8,11 @@ func parseCreateTableStatement(tokens []*token, initialCursor uint, delimiter to
 	}
 	cursor++
 
+	if !expectToken(tokens, cursor, tokenFromKeyword(tableKeyword)) {
+		return nil, initialCursor, false
+	}
+	cursor++
+
 	name, newCursor, ok := parseToken(tokens, cursor, identifierKind)
 	if !ok {
 		helpMessage(tokens, cursor, "expected table name")
