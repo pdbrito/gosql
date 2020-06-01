@@ -3,7 +3,6 @@ package gosql
 func parseInsertStatement(tokens []*token, initialCursor uint, delimiter token) (*InsertStatement, uint, bool) {
 	cursor := initialCursor
 	if !expectToken(tokens, cursor, tokenFromKeyword(insertKeyword)) {
-		helpMessage(tokens, cursor, "expected INSERT")
 		return nil, initialCursor, false
 	}
 	cursor++

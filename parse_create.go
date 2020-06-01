@@ -3,7 +3,6 @@ package gosql
 func parseCreateTableStatement(tokens []*token, initialCursor uint, delimiter token) (*CreateTableStatement, uint, bool) {
 	cursor := initialCursor
 	if !expectToken(tokens, cursor, tokenFromKeyword(createKeyword)) {
-		helpMessage(tokens, cursor, "expected CREATE")
 		return nil, initialCursor, false
 	}
 	cursor++
