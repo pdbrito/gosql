@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/binary"
 	"errors"
+	"fmt"
+	"strconv"
 )
 
 type ColumnType uint
@@ -92,5 +94,53 @@ func (mb *MemoryBackend) CreateTable(crt *CreateTableStatement) error {
 		t.columnTypes = append(t.columnTypes, dt)
 	}
 
+	return nil
+}
+
+func (mb *MemoryBackend) Insert(inst *InsertStatement) error {
+	table, ok := mb.tables[inst.table.value]
+	if !ok {
+		return ErrTableDoesNotExist
+	}
+
+	if inst.values == nil {
+		return nil
+	}
+
+	row := []MemoryCell{}
+
+	if len(*inst.values) != len(table.columns) {
+		return ErrMissingValues
+	}
+
+	for _, val := range *inst.values {
+		if val.kind != literalKind {
+			fmt.Println("Skipping non-literal.")
+			continue
+		}
+
+		row = append(row, mb.tokenToCell(val.literal))
+	}
+
+	table.rows = append(table.rows, row)
+	return nil
+}
+
+func (mb *MemoryBackend) tokenToCell(t *token) MemoryCell {
+	if t.kind == numericKind {
+		buf := new(bytes.Buffer)
+		i, err := strconv.Atoi(t.value)
+		if err != nil {
+			panic(err)
+		}
+
+		if err := binary.Write(buf, binary.BigEndian, int32(i)); err != nil {
+			panic(err)
+		}
+		return MemoryCell(buf.Bytes())
+	}
+	if t.kind == stringKind {
+		return MemoryCell(t.value)
+	}
 	return nil
 }
